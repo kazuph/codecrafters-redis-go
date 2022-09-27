@@ -46,6 +46,8 @@ func decodeBulkString(byteStream *bufio.Reader) (Value, error) {
 		return Value{}, fmt.Errorf("failed to parse bulk string length: %s", err)
 	}
 
+	fmt.Println("count: ", count)
+
 	readBytes := make([]byte, count+2)
 
 	if _, err := io.ReadFull(byteStream, readBytes); err != nil {
