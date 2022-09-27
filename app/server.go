@@ -165,7 +165,6 @@ func handleConnect(conn net.Conn) {
 			conn.Write([]byte("-ERR unknown command '" + command + "'\r\n"))
 		}
 
-		conn.Write([]byte("+PONG\r\n"))
 	}
 }
 
