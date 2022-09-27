@@ -13,6 +13,18 @@ type Value struct {
 	array []Value
 }
 
+// func decodeSimpleString(r *bufio.Reader) (Value, error) {
+// 	return Value{}, fmt.Errorf("invalid RESP data type byte: %s", string(dataTypeByte))
+// }
+//
+// func decodeBulkString(r *bufio.Reader) (Value, error) {
+// 	return Value{}, fmt.Errorf("invalid RESP data type byte: %s", string(dataTypeByte))
+// }
+//
+// func decodeArray(r *bufio.Reader) (Value, error) {
+// 	return Value{}, fmt.Errorf("invalid RESP data type byte: %s", string(dataTypeByte))
+// }
+
 func DecodeRESP(byteStream *bufio.Reader) (Value, error) {
 	dataTypeByte, err := byteStream.ReadByte()
 	if err != nil {
@@ -65,6 +77,13 @@ func main() {
 			fmt.Println("Error accepting connection: ", err.Error())
 			os.Exit(1)
 		}
+
+		status, err := bufio.NewReader(conn).ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading from client: ", err.Error())
+			continue
+		}
+		fmt.Println("status: ", status)
 
 		go handleConnect(conn)
 	}
