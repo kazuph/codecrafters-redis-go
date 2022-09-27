@@ -43,7 +43,7 @@ func DecodeRESP(byteStream *bufio.Reader) (Value, error) {
 	// 	return decodeArray(byteStream)
 	// }
 
-	return Value{}, fmt.Errorf("invalid RESP data type byte: %s", string(dataTypeByte))
+	return Value{}, nil
 }
 
 func handleConnect(conn net.Conn) {
