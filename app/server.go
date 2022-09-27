@@ -97,10 +97,10 @@ func DecodeRESP(byteStream *bufio.Reader) (Value, error) {
 	fmt.Println("dataTypeByte: ", string(dataTypeByte))
 
 	switch string(dataTypeByte) {
-	// case "+":
-	// 	return decodeSimpleString(byteStream)
-	// case "$":
-	// 	return decodeBulkString(byteStream)
+	case "+":
+		return decodeSimpleString(byteStream)
+	case "$":
+		return decodeBulkString(byteStream)
 	case "*":
 		return decodeArray(byteStream)
 	}
@@ -126,15 +126,43 @@ func readUntilCRLF(byteStream *bufio.Reader) ([]byte, error) {
 	return readBytes[:len(readBytes)-2], nil
 }
 
+func (v Value) Array() []Value {
+	if v.typ == Array {
+		return v.array
+	}
+
+	return []Value{}
+}
+
+func (v Value) String() string {
+	if v.typ == BulkString || v.typ == SimpleString {
+		return string(v.bytes)
+	}
+
+	return ""
+}
+
 func handleConnect(conn net.Conn) {
 	defer conn.Close()
 
 	for {
-		_, err := DecodeRESP(bufio.NewReader(conn))
+		value, err := DecodeRESP(bufio.NewReader(conn))
 
 		if err != nil {
 			fmt.Println("Error reading from client: ", err.Error())
 			continue
+		}
+
+		command := value.Array()[0].String()
+		args := value.Array()[1:]
+
+		switch command {
+		case "ping":
+			conn.Write([]byte("+PONG\r\n"))
+		case "echo":
+			conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(args[0].String()), args[0].String())))
+		default:
+			conn.Write([]byte("-ERR unknown command '" + command + "'\r\n"))
 		}
 
 		conn.Write([]byte("+PONG\r\n"))
@@ -154,13 +182,6 @@ func main() {
 			fmt.Println("Error accepting connection: ", err.Error())
 			os.Exit(1)
 		}
-
-		// status, err := bufio.NewReader(conn).ReadString('\n')
-		// if err != nil {
-		// 	fmt.Println("Error reading from client: ", err.Error())
-		// 	continue
-		// }
-		// fmt.Println("status: ", status)
 
 		go handleConnect(conn)
 	}
