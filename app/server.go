@@ -1,23 +1,51 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net"
 	"os"
 )
 
+type Value struct {
+	typ   byte
+	bytes []byte
+	array []Value
+}
+
+func DecodeRESP(byteStream *bufio.Reader) (Value, error) {
+	dataTypeByte, err := byteStream.ReadByte()
+	if err != nil {
+		return Value{}, err
+	}
+
+	fmt.Println("dataTypeByte: ", dataTypeByte)
+	fmt.Println("dataTypeByte: ", string(dataTypeByte))
+
+	// switch string(dataTypeByte) {
+	// case "+":
+	// 	return decodeSimpleString(byteStream)
+	// case "$":
+	// 	return decodeBulkString(byteStream)
+	// case "*":
+	// 	return decodeArray(byteStream)
+	// }
+
+	return Value{}, fmt.Errorf("invalid RESP data type byte: %s", string(dataTypeByte))
+}
+
 func handleConnect(conn net.Conn) {
 	defer conn.Close()
 
 	for {
-		_, err := conn.Read([]byte{})
+		_, err := DecodeRESP(bufio.NewReader(conn))
 
 		if err != nil {
 			fmt.Println("Error reading from client: ", err.Error())
 			continue
 		}
 
-		conn.Write([]byte("+PONG\r\n"))
+		conn.Write([]byte(""))
 	}
 }
 
