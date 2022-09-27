@@ -78,12 +78,12 @@ func main() {
 			os.Exit(1)
 		}
 
-		status, err := bufio.NewReader(conn).ReadString('\n')
-		if err != nil {
-			fmt.Println("Error reading from client: ", err.Error())
-			continue
-		}
-		fmt.Println("status: ", status)
+		// status, err := bufio.NewReader(conn).ReadString('\n')
+		// if err != nil {
+		// 	fmt.Println("Error reading from client: ", err.Error())
+		// 	continue
+		// }
+		// fmt.Println("status: ", status)
 
 		go handleConnect(conn)
 	}
