@@ -28,7 +28,7 @@ type Value struct {
 func DecodeRESP(byteStream *bufio.Reader) (Value, error) {
 	dataTypeByte, err := byteStream.ReadByte()
 	if err != nil {
-		return Value{}, err
+		return Value{}, nil
 	}
 
 	fmt.Println("dataTypeByte: ", dataTypeByte)
