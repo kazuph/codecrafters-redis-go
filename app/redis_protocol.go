@@ -104,7 +104,7 @@ func readUntilCRLF(byteStream *bufio.Reader) ([]byte, error) {
 		readBytes = append(readBytes, b...)
 		fmt.Printf("%s\n", readBytes)
 		if len(readBytes) >= 2 && readBytes[len(readBytes)-2] == '\r' {
-			fmt.Printf("break %s\n", readBytes)
+			fmt.Printf("break %s\n", string(readBytes))
 			break
 		}
 	}
