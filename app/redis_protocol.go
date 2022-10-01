@@ -13,8 +13,6 @@ func DecodeRESP(byteStream *bufio.Reader) (Value, error) {
 		return Value{}, nil
 	}
 
-	fmt.Println("dataTypeByte: ", string(dataTypeByte))
-
 	switch string(dataTypeByte) {
 	case "+":
 		return decodeSimpleString(byteStream)
@@ -50,8 +48,6 @@ func decodeBulkString(byteStream *bufio.Reader) (Value, error) {
 		return Value{}, fmt.Errorf("failed to parse bulk string length: %s", err)
 	}
 
-	fmt.Println("count: ", count)
-
 	readBytes := make([]byte, count+2)
 
 	if _, err := io.ReadFull(byteStream, readBytes); err != nil {
@@ -82,32 +78,24 @@ func decodeArray(byteStream *bufio.Reader) (Value, error) {
 		if err != nil {
 			return Value{}, err
 		}
+		fmt.Println("value: ", value)
 
 		array = append(array, value)
 	}
 
-	return Value{
+	value := Value{
 		typ:   Array,
 		array: array,
-	}, nil
+	}
+
+	return value, nil
 }
 
 func readUntilCRLF(byteStream *bufio.Reader) ([]byte, error) {
-	readBytes := []byte{}
-
-	for {
-		b, err := byteStream.ReadBytes('\n')
-		if err != nil {
-			return nil, err
-		}
-
-		readBytes = append(readBytes, b...)
-		fmt.Printf("%s\n", readBytes)
-		if len(readBytes) >= 2 && readBytes[len(readBytes)-2] == '\r' {
-			fmt.Printf("break %s\n", string(b))
-			break
-		}
+	b, err := byteStream.ReadBytes('\n')
+	if err != nil {
+		return nil, err
 	}
-
-	return readBytes[:len(readBytes)-2], nil
+	// ReadStringで'\n'まで読むと末尾に'\r\n'が含まれるので削除する
+	return b[:len(b)-2], nil
 }
