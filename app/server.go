@@ -61,6 +61,7 @@ func handleConnect(conn net.Conn, mem *Mem) {
 		case "get":
 			key := args[0].String()
 			value := mem.Get(key)
+			fmt.Printf("GET key: %s, value: %s", key, value)
 			conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(value), value)))
 		default:
 			conn.Write([]byte("-ERR unknown command '" + command + "'\r\n"))
