@@ -30,12 +30,12 @@ func main() {
 func handleConnect(conn net.Conn, mem *Mem) {
 	defer conn.Close()
 
-	msg := []byte{}
+	msg := make([]byte, 1024)
 	_, err := conn.Read(msg)
 	if err != nil {
 		fmt.Println("Error reading: ", err.Error())
 	}
-	fmt.Println("msg: ", msg)
+	fmt.Println("msg: ", string(msg))
 
 	for {
 		value, err := DecodeRESP(bufio.NewReader(conn))
