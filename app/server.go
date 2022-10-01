@@ -57,6 +57,7 @@ func handleConnect(conn net.Conn, mem *Mem) {
 		case "echo":
 			conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(args[0].String()), args[0].String())))
 		case "set":
+			fmt.Printf("SET key: %s, value: %s", args[0].String(), args[1].String())
 			mem.Set(args[0].String(), args[1].String())
 			conn.Write([]byte("+OK\r\n"))
 		case "get":
