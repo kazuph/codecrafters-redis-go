@@ -78,7 +78,6 @@ func decodeArray(byteStream *bufio.Reader) (Value, error) {
 		if err != nil {
 			return Value{}, err
 		}
-		fmt.Println("value: ", value)
 
 		array = append(array, value)
 	}
