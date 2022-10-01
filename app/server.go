@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -30,16 +31,16 @@ func main() {
 func handleConnect(conn net.Conn, mem *Mem) {
 	defer conn.Close()
 
-	// msg := make([]byte, 1024)
-	// _, err := conn.Read(msg)
-	// if err != nil {
-	// 	fmt.Println("Error reading: ", err.Error())
-	// }
-	// fmt.Println("msg: ", string(msg))
+	msg := make([]byte, 1024)
+	_, err := conn.Read(msg)
+	if err != nil {
+		fmt.Println("Error reading: ", err.Error())
+	}
+	fmt.Println("msg: ", string(msg))
 
 	for {
-		// value, err := DecodeRESP(bufio.NewReader(strings.NewReader(string(msg))))
-		value, err := DecodeRESP(bufio.NewReader(conn))
+		value, err := DecodeRESP(bufio.NewReader(strings.NewReader(string(msg))))
+		// value, err := DecodeRESP(bufio.NewReader(conn))
 
 		if err != nil {
 			fmt.Println("Error reading from client: ", err.Error())
