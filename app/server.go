@@ -46,7 +46,7 @@ func handleConnect(conn net.Conn, mem *Mem) {
 			continue
 		}
 
-		fmt.Println("value: ", value)
+		// fmt.Println("value: ", value)
 		command := value.Array()[0].String()
 		args := value.Array()[1:]
 
