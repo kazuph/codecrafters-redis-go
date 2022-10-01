@@ -39,10 +39,7 @@ func handleConnect(conn net.Conn, mem *Mem) {
 		}
 
 		command := value.Array()[0].String()
-		var args []Value
-		if len(value.Array()) > 0 {
-			args = value.Array()[1:]
-		}
+		args := value.Array()[1:]
 
 		switch command {
 		case "ping":
