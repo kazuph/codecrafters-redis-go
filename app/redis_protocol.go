@@ -98,5 +98,8 @@ func readUntilCRLF(byteStream *bufio.Reader) ([]byte, error) {
 	}
 	// ReadStringで'\n'まで読むと末尾に'\r\n'が含まれるので削除する
 	// fmt.Printf("read b = %s", b)
-	return b[:len(b)-2], nil
+	if len(b) >= 2 {
+		b = b[:len(b)-2]
+	}
+	return b, nil
 }
