@@ -14,6 +14,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	mem := NewMem()
+
 	for {
 		conn, err := l.Accept()
 		if err != nil {
@@ -21,11 +23,11 @@ func main() {
 			os.Exit(1)
 		}
 
-		go handleConnect(conn)
+		go handleConnect(conn, mem)
 	}
 }
 
-func handleConnect(conn net.Conn) {
+func handleConnect(conn net.Conn, mem *Mem) {
 	defer conn.Close()
 
 	for {
@@ -44,6 +46,13 @@ func handleConnect(conn net.Conn) {
 			conn.Write([]byte("+PONG\r\n"))
 		case "echo":
 			conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(args[0].String()), args[0].String())))
+		case "set":
+			mem.Set(args[0].String(), args[1].String())
+			conn.Write([]byte("+OK\r\n"))
+		case "get":
+			key := args[0].String()
+			value := mem.Get(key)
+			conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(value), value)))
 		default:
 			conn.Write([]byte("-ERR unknown command '" + command + "'\r\n"))
 		}
