@@ -38,36 +38,36 @@ func handleConnect(conn net.Conn, mem *Mem) {
 	}
 	fmt.Println("msg: ", string(msg))
 
-	for {
-		value, err := DecodeRESP(bufio.NewReader(strings.NewReader(string(msg))))
-		// value, err := DecodeRESP(bufio.NewReader(conn))
+	// for {
+	value, err := DecodeRESP(bufio.NewReader(strings.NewReader(string(msg))))
+	// value, err := DecodeRESP(bufio.NewReader(conn))
 
-		if err != nil {
-			fmt.Println("Error reading from client: ", err.Error())
-			continue
-		}
-
-		// fmt.Println("value: ", value)
-		command := value.Array()[0].String()
-		args := value.Array()[1:]
-
-		switch command {
-		case "ping":
-			conn.Write([]byte("+PONG\r\n"))
-		case "echo":
-			conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(args[0].String()), args[0].String())))
-		case "set":
-			fmt.Printf("SET key: %s, value: %s\n", args[0].String(), args[1].String())
-			mem.Set(args[0].String(), args[1].String())
-			conn.Write([]byte("+OK\r\n"))
-		case "get":
-			key := args[0].String()
-			value := mem.Get(key)
-			fmt.Printf("GET key: %s, value: %s\n", key, value)
-			conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(value), value)))
-		default:
-			conn.Write([]byte("-ERR unknown command '" + command + "'\r\n"))
-		}
-
+	if err != nil {
+		fmt.Println("Error reading from client: ", err.Error())
+		// continue
 	}
+
+	// fmt.Println("value: ", value)
+	command := value.Array()[0].String()
+	args := value.Array()[1:]
+
+	switch command {
+	case "ping":
+		conn.Write([]byte("+PONG\r\n"))
+	case "echo":
+		conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(args[0].String()), args[0].String())))
+	case "set":
+		fmt.Printf("SET key: %s, value: %s\n", args[0].String(), args[1].String())
+		mem.Set(args[0].String(), args[1].String())
+		conn.Write([]byte("+OK\r\n"))
+	case "get":
+		key := args[0].String()
+		value := mem.Get(key)
+		fmt.Printf("GET key: %s, value: %s\n", key, value)
+		conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(value), value)))
+	default:
+		conn.Write([]byte("-ERR unknown command '" + command + "'\r\n"))
+	}
+
+	// }
 }
