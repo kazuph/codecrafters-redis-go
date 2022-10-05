@@ -48,7 +48,6 @@ func handleConnect(conn net.Conn, mem *Mem) {
 			continue
 		}
 
-		// fmt.Println("value: ", value)
 		if len(value.Array()) == 0 {
 			conn.Write([]byte("-ERR unknown command\r\n"))
 			panic("unknown command")
