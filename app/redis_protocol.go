@@ -25,6 +25,7 @@ func DecodeRESP(byteStream *bufio.Reader) (Value, error) {
 	return Value{}, nil
 }
 
+// 読んだままのバイト列を返す
 func decodeSimpleString(byteStream *bufio.Reader) (Value, error) {
 	readBytes, err := readUntilCRLF(byteStream)
 	if err != nil {
@@ -37,6 +38,7 @@ func decodeSimpleString(byteStream *bufio.Reader) (Value, error) {
 	}, nil
 }
 
+// byte数分読んで返す
 func decodeBulkString(byteStream *bufio.Reader) (Value, error) {
 	readBytesForCount, err := readUntilCRLF(byteStream)
 	if err != nil {
@@ -96,9 +98,9 @@ func readUntilCRLF(byteStream *bufio.Reader) ([]byte, error) {
 		return nil, err
 	}
 	// ReadStringで'\n'まで読むと末尾に'\r\n'が含まれるので削除する
-	// fmt.Printf("read b = %s", b)
 	if len(b) >= 2 {
 		b = b[:len(b)-2]
 	}
 	return b, nil
 }
+
