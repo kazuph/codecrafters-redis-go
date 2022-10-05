@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strconv"
+	"time"
 )
 
 func main() {
@@ -57,11 +59,37 @@ func handleConnect(conn net.Conn, mem *Mem) {
 			conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(args[0].String()), args[0].String())))
 		case "set":
 			fmt.Printf("SET key: %s, value: %s\n", args[0].String(), args[1].String())
-			mem.Set(args[0].String(), args[1].String())
+			// len > 2の場合はオプションが存在する
+			if len(args) > 2 {
+				option := args[3].String()
+				switch option {
+				case "px":
+					// pxの場合はミリ秒
+					fmt.Printf("px: %s\n", args[4].String())
+					// to int
+					expireMSec, err := strconv.Atoi(args[4].String())
+					if err != nil {
+						conn.Write([]byte("-ERR value is not an integer or out of range\r"))
+					}
+					mem.SetWithExpiry(
+						args[0].String(),
+						args[1].String(),
+						time.Duration(expireMSec)*time.Millisecond,
+					)
+				}
+
+			} else {
+				mem.Set(args[0].String(), args[1].String())
+			}
 			conn.Write([]byte("+OK\r\n"))
 		case "get":
 			key := args[0].String()
-			value := mem.Get(key)
+			value, found := mem.Get(args[0].String())
+			if found {
+				conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(value), value)))
+			} else {
+				conn.Write([]byte("$-1\r\n"))
+			}
 			fmt.Printf("GET key: %s, value: %s\n", key, value)
 			conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(value), value)))
 		default:
