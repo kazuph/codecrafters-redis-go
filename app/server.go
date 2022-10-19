@@ -42,6 +42,12 @@ func handleConnect(conn net.Conn, mem *Mem) {
 
 		fmt.Println("msg: ", string(msg))
 
+		ok := strings.HasSuffix(string(msg), "\r\n")
+		if !ok {
+			fmt.Println("There is no line break at the end.")
+			msg = []byte(string(msg) + "\r\n")
+		}
+
 		value, err := DecodeRESP(bufio.NewReader(strings.NewReader(string(msg))))
 		// value, err := DecodeRESP(bufio.NewReader(conn))
 
