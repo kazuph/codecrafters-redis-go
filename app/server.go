@@ -74,7 +74,7 @@ func handleConnect(conn net.Conn, mem *Mem) {
 					// to int
 					expireMSec, err := strconv.Atoi(args[4].String())
 					if err != nil {
-						conn.Write([]byte("-ERR value is not an integer or out of range\r"))
+						conn.Write([]byte("-ERR value is not an integer or out of range\r\n"))
 					}
 					mem.SetWithExpiry(
 						args[0].String(),

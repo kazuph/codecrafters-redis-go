@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Mem struct {
 	data map[string]ValueWithExpiry
@@ -18,6 +21,7 @@ func NewMem() *Mem {
 }
 
 func (m *Mem) Get(key string) (string, bool) {
+	fmt.Println("%#v", m.data)
 	valueWithExpiry, ok := m.data[key]
 	if !ok {
 		return "", false
