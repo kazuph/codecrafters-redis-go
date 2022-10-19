@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"time"
 )
 
@@ -21,17 +21,17 @@ func NewMem() *Mem {
 }
 
 func (m *Mem) Get(key string) (string, bool) {
-	fmt.Printf("%#v\n", m.data)
+	log.Printf("%#v\n", m.data)
 	valueWithExpiry, ok := m.data[key]
 
 	if !ok {
-		fmt.Println("GET: !ok")
+		log.Println("GET: !ok")
 		return "", false
 	}
 
 	if !valueWithExpiry.expiresAt.IsZero() && time.Now().Before(valueWithExpiry.expiresAt) {
 		delete(m.data, key)
-		fmt.Println("GET: expired")
+		log.Println("GET: expired")
 		return "", false
 	}
 
