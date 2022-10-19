@@ -25,11 +25,13 @@ func (m *Mem) Get(key string) (string, bool) {
 	valueWithExpiry, ok := m.data[key]
 
 	if !ok {
+		fmt.Println("GET: !ok")
 		return "", false
 	}
 
 	if !valueWithExpiry.expiresAt.IsZero() || time.Now().After(valueWithExpiry.expiresAt) {
 		delete(m.data, key)
+		fmt.Println("GET: expired")
 		return "", false
 	}
 

@@ -42,7 +42,7 @@ func handleConnect(conn net.Conn, mem *Mem) {
 		if err != nil {
 			fmt.Println("Error reading: ", err.Error())
 			if errors.Is(err, io.EOF) {
-				break
+				break // 重要
 			}
 			log.Fatal(err)
 		}
