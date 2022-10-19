@@ -40,7 +40,7 @@ func handleConnect(conn net.Conn, mem *Mem) {
 			fmt.Println("Error reading: ", err.Error())
 		}
 
-		// fmt.Println("msg: ", string(msg))
+		fmt.Println("msg: ", string(msg))
 
 		value, err := DecodeRESP(bufio.NewReader(strings.NewReader(string(msg))))
 		// value, err := DecodeRESP(bufio.NewReader(conn))
@@ -89,7 +89,7 @@ func handleConnect(conn net.Conn, mem *Mem) {
 			conn.Write([]byte("+OK\r\n"))
 		case "get":
 			key := args[0].String()
-			value, found := mem.Get(args[0].String())
+			value, found := mem.Get(key)
 			fmt.Printf("GET key: %s, value: %s\n", key, value)
 			if found {
 				conn.Write([]byte(fmt.Sprintf("$%d\r\n%s\r\n", len(value), value)))

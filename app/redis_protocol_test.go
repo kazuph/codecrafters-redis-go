@@ -81,6 +81,32 @@ func TestDecodeEcho(t *testing.T) {
 	}
 }
 
+func TestDecodeSet(t *testing.T) {
+	str := "*3\r\n$3\r\nset\r\n$4\r\nabcd\r\n$4\r\nheya\r\n"
+	fmt.Println(str)
+	value, err := DecodeRESP(bufio.NewReader(bytes.NewBufferString(str)))
+
+	if err != nil {
+		t.Errorf("error decoding array: %s", err)
+	}
+
+	if value.typ != Array {
+		t.Errorf("expected Array, got %v", value.typ)
+	}
+
+	if value.Array()[0].String() != "set" {
+		t.Errorf("expected 'GET', got '%s'", value.Array()[0].String())
+	}
+
+	if value.Array()[1].String() != "abcd" {
+		t.Errorf("expected 'this', got '%s'", value.Array()[1].String())
+	}
+
+	if value.Array()[2].String() != "heya" {
+		t.Errorf("expected 'this', got '%s'", value.Array()[1].String())
+	}
+}
+
 func TestDecodePing(t *testing.T) {
 	str := "*1\r\n$4\r\nping\r\n"
 	fmt.Println(str)
