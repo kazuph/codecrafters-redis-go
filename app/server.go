@@ -66,13 +66,13 @@ func handleConnect(conn net.Conn, mem *Mem) {
 			fmt.Printf("SET key: %s, value: %s\n", args[0].String(), args[1].String())
 			// len > 2の場合はオプションが存在する
 			if len(args) > 2 {
-				option := args[3].String()
+				option := args[2].String()
 				switch option {
 				case "px":
 					// pxの場合はミリ秒
-					fmt.Printf("px: %s\n", args[4].String())
+					fmt.Printf("px: %s\n", args[3].String())
 					// to int
-					expireMSec, err := strconv.Atoi(args[4].String())
+					expireMSec, err := strconv.Atoi(args[3].String())
 					if err != nil {
 						conn.Write([]byte("-ERR value is not an integer or out of range\r\n"))
 					}
