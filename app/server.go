@@ -40,7 +40,7 @@ func handleConnect(conn net.Conn, mem *Mem) {
 			fmt.Println("Error reading: ", err.Error())
 		}
 
-		fmt.Println("msg: ", string(msg))
+		// fmt.Println("msg: ", string(msg))
 
 		value, err := DecodeRESP(bufio.NewReader(strings.NewReader(string(msg))))
 		// value, err := DecodeRESP(bufio.NewReader(conn))
