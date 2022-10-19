@@ -2,7 +2,10 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
+	"io"
+	"log"
 	"net"
 	"os"
 	"strconv"
@@ -38,6 +41,10 @@ func handleConnect(conn net.Conn, mem *Mem) {
 		_, err := conn.Read(msg)
 		if err != nil {
 			fmt.Println("Error reading: ", err.Error())
+			if errors.Is(err, io.EOF) {
+				break
+			}
+			log.Fatal(err)
 		}
 
 		fmt.Println("msg: ", string(msg))
