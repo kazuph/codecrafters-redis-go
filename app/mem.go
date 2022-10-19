@@ -29,7 +29,7 @@ func (m *Mem) Get(key string) (string, bool) {
 		return "", false
 	}
 
-	if !valueWithExpiry.expiresAt.IsZero() || time.Now().After(valueWithExpiry.expiresAt) {
+	if !valueWithExpiry.expiresAt.IsZero() && time.Now().Before(valueWithExpiry.expiresAt) {
 		delete(m.data, key)
 		fmt.Println("GET: expired")
 		return "", false
